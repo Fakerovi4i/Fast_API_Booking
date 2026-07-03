@@ -4,3 +4,5 @@
  .env
  db-data/
  *.pyc
+ Получить хэш.py
+ hotkeys.txt
