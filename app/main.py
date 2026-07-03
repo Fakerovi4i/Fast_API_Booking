@@ -1,3 +1,4 @@
+import time
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
@@ -20,7 +21,7 @@ from app.database import engine
 from app.hotels.router import router_admin_hotels, router_hotels
 from app.images.router import router as router_images
 from app.hotels.importer.router import router as router_importer
-# from app.logger import logger
+from app.logger import logger
 from app.pages.router import router as router_pages
 from app.users.router import router_auth, router_user
 
@@ -82,28 +83,28 @@ sentry_sdk.init(
     send_default_pii=True,
 )
 
-# ==== LOGGER =====
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-#     allow_headers=[
-#         "Content-Type", "Authorization", "Set-Cookie",
-#         "Access-Control-Allow-Headers", "Access-Control-Allow-Origin",
-#         "Access-Control-Allow-Credentials"
-#     ]
-# )
+#==== LOGGER =====
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=[
+        "Content-Type", "Authorization", "Set-Cookie",
+        "Access-Control-Allow-Headers", "Access-Control-Allow-Origin",
+        "Access-Control-Allow-Credentials"
+    ]
+)
 
-# @app.middleware("http")
-# async def log_request(request: Request, call_nex):
-#     start_time = time.time()
-#     response = await call_nex(request)
-#     process_time = time.time() - start_time
-#     logger.info("Request handling time", extra={
-#         "process_time": round(process_time, 4)
-#     })
-#     return response
+@app.middleware("http")
+async def log_request(request: Request, call_nex):
+    start_time = time.time()
+    response = await call_nex(request)
+    process_time = time.time() - start_time
+    logger.info("Request handling time", extra={
+        "process_time": round(process_time, 4)
+    })
+    return response
 
 
 
