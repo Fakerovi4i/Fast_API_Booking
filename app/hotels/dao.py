@@ -1,3 +1,4 @@
+import json
 from datetime import date
 import io
 import csv
@@ -140,12 +141,18 @@ class HotelDAO(BaseDAO):
             if existing_hotel:
                 continue
 
-            services = row.get('services', '[]')
+            services_str = row.get('services', '[]')
+            try:
+                services = json.loads(services_str)
+            except json.JSONDecodeError:
+                services = []
+
+
             hotel = {
                 "name": name,
                 "location": location,
                 "services": services,
-                "rooms_quantity": int(row.get("rooms_quantity"), 0),
+                "rooms_quantity": int(row.get("rooms_quantity", 0)),
                 "image_id": int(row.get("image_id", 0))
             }
             hotels_to_add.append(hotel)
