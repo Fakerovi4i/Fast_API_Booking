@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Набронировал</title>
+</head>
+<body style="background-image: url('/static/images/123.webp');
+             background-size: 100% auto;
+             background-repeat: repeat-y;
+             background-position: top center;">
+
+    <!-- ГЛАВНЫЙ КОНТЕЙНЕР С ПЕРЕНОСОМ -->
+    <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+
+        {% for hotel in hotels %}
+        <!-- КАРТОЧКА ОТЕЛЯ – примерно половина ширины -->
+        <div style="width: 45%; margin: 15px; display: flex; align-items: center;">
+
+            <img src="{{ url_for('static', path='images/' + hotel.image_id|string + '.webp') }}"
+                 alt="Фото нет" width="320" height="200"
+                 style="flex-shrink: 0;">
+
+            <div style="margin-left: 20px;">
+                <h1 style="margin-bottom: -5px; word-wrap: break-word; overflow-wrap: break-word;">
+                    {{ hotel.name }}
+                </h1>
+                <h2 style="word-wrap: break-word; overflow-wrap: break-word;">
+                    {{ hotel.location }}
+                </h2>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+</body>
+</html>
+
+<!--<!doctype html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport"-->
+<!--          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">-->
+<!--    <meta http-equiv="X-UA-Compatible" content="ie=edge">-->
+<!--    <title>Набронировал</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div class="main">-->
+<!--        <img src="{{ url_for('static', path='images/1.webp') }}"-->
+<!--             alt="Фото нет" width="320" height="200">-->
+<!--        <div>-->
+<!--            <h1>{{ "Отель 5 звезд" }}</h1>-->
+<!--            <h2>{{ "Бесподобное местечко" }}</h2>-->
+<!--        </div>-->
+
+<!--    </div>-->
+<!--</body>-->
+<!--</html>-->

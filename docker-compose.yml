@@ -1,0 +1,65 @@
+services:
+  pg:
+    image: postgres
+    container_name: my_postgres_Fastapi
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "postgres"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data/pgdata
+
+  redis:
+    image: redis
+    container_name: my_redis_Fastapi
+
+  booking:
+    image: booking_app
+    build:
+      context: .
+    container_name: booking_app
+
+    depends_on:
+      - pg
+      - redis
+    command: ["/booking/docker/app.sh"]
+    ports:
+      - "7777:8000"
+    environment:
+      DB_HOST: pg
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_NAME: postgres
+
+  celery:
+    image: booking_celery
+    build:
+      context: .
+    container_name: booking_celery
+    command: ["/booking/docker/celery.sh", "celery"]
+    depends_on:
+      - redis
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+  flower:
+    image: booking_flower
+    build:
+      context: .
+    container_name: booking_flower
+    command: [ "/booking/docker/celery.sh", "flower" ]
+    depends_on:
+      - redis
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - "5555:5555"
+
+volumes:
+  db-data:

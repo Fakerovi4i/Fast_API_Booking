@@ -1,0 +1,45 @@
+from typing import Optional
+
+from app.config import settings
+
+from passlib.context import CryptContext
+from jose import jwt
+from datetime import datetime, timedelta, timezone
+
+from pydantic import EmailStr
+
+from app.users.dao import UserDAO
+from app.users.models import Users
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def get_password_hash(password: str) -> str:
+    return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
+
+def create_access_token(data: dict) -> str:
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + timedelta(minutes=300)
+    to_encode.update({"exp": expire})
+
+    # ДОБАВЛЯЕМ ОТЛАДОЧНЫЙ ВЫВОД
+    # print(f"=== СОЗДАНИЕ ТОКЕНА ===")
+    # print(f"Текущее время (UTC): {datetime.now(timezone.utc)}")
+    # print(f"Время истечения (UTC): {expire}")
+    # print(f"Токен истекает через: 30 минут")
+    # print(f"Payload: {to_encode}")
+
+    encoded_jwt = jwt.encode(to_encode, key=settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+    # print(f"Созданный токен: {encoded_jwt}")
+    # print(f"========================")
+
+    return encoded_jwt
+
+async def authenticate_user(email: EmailStr, password: str) -> Optional[Users]:
+    user: Optional[Users] = await UserDAO.find_one_or_none(email=email)
+    if not user or not verify_password(password, user.hashed_password):
+        return None
+    return user

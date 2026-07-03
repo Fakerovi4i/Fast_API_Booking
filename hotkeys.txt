@@ -1,0 +1,160 @@
+  Ctrl + B              - Перейти к определению (функции, класса)
+  Alt + F7              - Найти все использования
+  Ctrl + Alt + Left/Right - Назад/Вперед по истории навигации
+  Ctrl + D              - Дублировать строку
+  Ctrl + Y              - Удалить строку
+  Alt + Enter           - Показать подсказки (Quick Fix)
+  Ctrl + Space          - Автодополнение кода
+  Ctrl + Shift + Enter  - Завершить строку (добавить ; и перейти на новую)
+  Ctrl + Alt + L        - Форматировать код (автоотступы)
+  Ctrl + Shift + F12    - Развернуть редактор на весь экран
+  Ctrl + Tab            - Переключение между открытыми файлами
+  Ctrl + Shift + Up/Down    - Переместить строку вверх/вниз
+  Alt + Shift + Up/Down     - Переместить строку вверх/вниз (альтернатива)
+  Ctrl + Shift + Left/Right - Выделить слово влево/вправо
+  Shift + Home/End          - Выделить до начала/конца строки
+
+  Ctrl + Q              - Показать документацию (при наведении на функцию)
+  Ctrl + P              - Показать параметры функции
+  Ctrl + Shift + I      - Быстрый просмотр определения
+
+  Ctrl + Alt + Shift + J - выделить ВСЕ одинаковые слова в файле
+  Alt + J - выделить следующее вхождение (можно нажимать несколько раз)
+
+
+
+Команды в терминале:
+    pip install -r requirements.txt
+    pip freeze > requirements.txt
+    .venv\Scripts\activate
+    Deactivate
+    ```bash
+    git init
+    git add .
+    git commit -m "Initial commit"
+
+ALEMBIC
+    alembic revision --autogenerate -m "create user"
+    alembic upgrade head
+
+
+DOCKER
+    docker images
+
+    docker build .
+    docker compose build
+    docker compose up
+    docker run -p 9000:8000 a87e4e1b7ab4
+
+UVICORN
+    uvicorn app.main:app --reload
+
+SECRET KEY
+    python -c "import secrets; print(secrets.token_hex(32))"
+
+
+#===========REDIS=============#
+    https://github.com/tporadowski/redis
+    https://github.com/long2ice/fastapi-cache
+        pip install "fastapi-cache2[redis]"
+    Keys *
+    set a 123
+    get a
+    clear
+
+#==========CELERY============#
+    pip install celery flower pillow
+    celery -A app.tasks.celery_app:celery worker --loglevel=INFO --pool=solo
+    celery -A app.tasks.celery_app:celery flower
+
+#========PYTEST=========#
+
+pytest -v -s
+
+#========BLACK / isort / flake8======#
+
+black app/bookings/dao.py --diff --color
+isort app/main.py --div
+isort app/main.py
+isort app -rc - во всем приложении
+autoflake
+
+
+flake8 app/main.py
+
+
+
+
+
+
+Для создания виртуального окружения:
+    python -m venv .venv
+
+🔍 НАВИГАЦИЯ И ПОИСК:
+  Ctrl + F              - Поиск в текущем файле
+  Ctrl + R              - Замена в текущем файле
+  Ctrl + Shift + F      - Поиск по всему проекту
+  Ctrl + Shift + R      - Замена по всему проекту
+  Ctrl + N              - Найти класс по имени
+  Ctrl + Shift + N      - Найти файл по имени
+  Ctrl + E              - Недавние файлы
+  Ctrl + B              - Перейти к определению (функции, класса)
+  Alt + F7              - Найти все использования
+  Ctrl + Alt + Left/Right - Назад/Вперед по истории навигации
+
+✏️ РЕДАКТИРОВАНИЕ КОДА:
+  Ctrl + D              - Дублировать строку
+  Ctrl + Y              - Удалить строку
+  Ctrl + /              - Закомментировать/раскомментировать строку
+  Ctrl + Shift + /      - Блочный комментарий /* */
+  Ctrl + W              - Расширить выделение
+  Ctrl + Shift + W      - Сузить выделение
+  Alt + Enter           - Показать подсказки (Quick Fix)
+  Ctrl + Space          - Автодополнение кода
+  Ctrl + Shift + Enter  - Завершить строку (добавить ; и перейти на новую)
+  Ctrl + Alt + L        - Форматировать код (автоотступы)
+  Shift + Tab           - Убрать отступ
+  Tab                   - Добавить отступ
+
+🔄 РЕФАКТОРИНГ:
+  Shift + F6            - Переименовать (переменную, функцию, файл)
+  Ctrl + Alt + M        - Извлечь метод (выделенный код в функцию)
+  Ctrl + Alt + V        - Извлечь переменную
+  Ctrl + Alt + C        - Извлечь константу
+
+▶️ ЗАПУСК И ОТЛАДКА:
+  Shift + F10           - Запустить программу
+  Shift + F9            - Запустить в режиме отладки (Debug)
+  Ctrl + F2             - Остановить программу
+  F8                    - Шаг вперед (Step Over) в отладчике
+  F7                    - Шаг внутрь (Step Into) в отладчике
+  Shift + F8            - Шаг наружу (Step Out) в отладчике
+  F9                    - Продолжить выполнение (Resume)
+  Ctrl + F8             - Поставить/убрать точку останова (Breakpoint)
+
+📂 РАБОТА С ФАЙЛАМИ:
+  Ctrl + S              - Сохранить файл
+  Ctrl + Shift + S      - Сохранить все файлы
+  Ctrl + W              - Закрыть вкладку
+  Ctrl + Shift + F4     - Закрыть все вкладки
+  Alt + Insert          - Создать новый файл/класс
+  Ctrl + F4             - Закрыть активную вкладку
+
+🪟 ОКНА И ПАНЕЛИ:
+  Alt + 1               - Показать/скрыть панель Project
+  Alt + 4               - Показать/скрыть панель Run
+  Alt + 5               - Показать/скрыть панель Debug
+  Alt + 7               - Показать/скрыть панель Structure
+  Ctrl + Shift + F12    - Развернуть редактор на весь экран
+  Ctrl + Tab            - Переключение между открытыми файлами
+
+🎯 ВЫДЕЛЕНИЕ И ПЕРЕМЕЩЕНИЕ:
+  Ctrl + Shift + Up/Down    - Переместить строку вверх/вниз
+  Alt + Shift + Up/Down     - Переместить строку вверх/вниз (альтернатива)
+  Ctrl + Shift + Left/Right - Выделить слово влево/вправо
+  Shift + Home/End          - Выделить до начала/конца строки
+  Ctrl + A                  - Выделить всё
+
+🔧 ТЕРМИНАЛ И КОНСОЛЬ:
+  Alt + F12             - Открыть/закрыть терминал
+  Ctrl + Shift + F10    - Запустить текущий файл
