@@ -20,7 +20,7 @@ from app.config import settings
 from app.database import engine
 from app.hotels.router import router_admin_hotels, router_hotels
 from app.images.router import router as router_images
-from app.hotels.importer.router import router as router_importer
+from app.importer.router import router as router_importer
 from app.logger import logger
 from app.pages.router import router as router_pages
 from app.users.router import router_auth, router_user

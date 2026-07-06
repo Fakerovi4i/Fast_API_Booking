@@ -16,6 +16,49 @@ from app.hotels.schemas import SHotelArgs, SHotel, SHotelAdd, SHotelWithRoomsLef
 
 
 class HotelDAO(BaseDAO):
+    """
+    Вместо общего метода для всех таблиц, можно сделать более просто для каждой таблицы
+    @classmethod
+    async def import_from_csv(cls, csv_data: str):
+        csv_reader = csv.DictReader(io.StringIO(csv_data))
+
+        hotels_to_add = []
+        for row in csv_reader:
+            name = row.get('name')
+            location = row.get('location')
+            existing_hotel = await cls.find_one_or_none(name=name, location=location)
+            if existing_hotel:
+                continue
+
+            services_str = row.get('services', '[]')
+            try:
+                services = json.loads(services_str)
+            except json.JSONDecodeError:
+                services = []
+
+
+            hotel = {
+                "name": name,
+                "location": location,
+                "services": services,
+                "rooms_quantity": int(row.get("rooms_quantity", 0)),
+                "image_id": int(row.get("image_id", 0))
+            }
+            hotels_to_add.append(hotel)
+
+        if not hotels_to_add:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="CSV файл не содержит новых данных"
+            )
+
+        async with async_session_maker() as session:
+            for hotel_data in hotels_to_add:
+                hotel = Hotels(**hotel_data)
+                session.add(hotel)
+            await session.commit()
+    """
+
     model = Hotels
 
     @classmethod
@@ -130,44 +173,11 @@ class HotelDAO(BaseDAO):
             return result.scalar_one_or_none()
 
     @classmethod
-    async def import_from_csv(cls, csv_data: str):
-        csv_reader = csv.DictReader(io.StringIO(csv_data))
-
-        hotels_to_add = []
-        for row in csv_reader:
-            name = row.get('name')
-            location = row.get('location')
-            existing_hotel = await cls.find_one_or_none(name=name, location=location)
-            if existing_hotel:
-                continue
-
-            services_str = row.get('services', '[]')
-            try:
-                services = json.loads(services_str)
-            except json.JSONDecodeError:
-                services = []
-
-
-            hotel = {
-                "name": name,
-                "location": location,
-                "services": services,
-                "rooms_quantity": int(row.get("rooms_quantity", 0)),
-                "image_id": int(row.get("image_id", 0))
-            }
-            hotels_to_add.append(hotel)
-
-        if not hotels_to_add:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="CSV файл не содержит новых данных"
-            )
-
+    async def find_all(cls) -> list[SHotel]:
         async with async_session_maker() as session:
-            for hotel_data in hotels_to_add:
-                hotel = Hotels(**hotel_data)
-                session.add(hotel)
-            await session.commit()
+            query = select(Hotels)
+            result = await session.execute(query)
+            return result.scalars().all()
 
 
 

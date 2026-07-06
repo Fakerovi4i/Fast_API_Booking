@@ -1,8 +1,12 @@
-from typing import Optional
+from sqlalchemy import select, insert
+from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.database import async_session_maker
 
-from sqlalchemy import select, insert
+from app.logger import logger
+
+
 
 
 
@@ -40,6 +44,19 @@ class BaseDAO:
             query = insert(cls.model).values(**data)
             await session.execute(query)
             await session.commit()
+
+    @classmethod
+    async def add_many_from_csv(cls, data: list[dict]):
+    # try:
+        query = pg_insert(cls.model).values(data).on_conflict_do_nothing()
+        async with async_session_maker() as session:
+            result = await session.execute(query)
+            await session.commit()
+        return result.rowcount
+    # except (SQLAlchemyError, Exception):
+#         logger.error(f"Insert error for {cls.model.__tablename__}", exc_info=True)
+#         return 0
+
 
 
 
