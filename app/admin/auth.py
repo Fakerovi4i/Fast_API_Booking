@@ -45,7 +45,6 @@ class AdminAuth(AuthenticationBackend):
 
     async def authenticate(self, request: Request) -> Optional[RedirectResponse]:
         try:
-            logger.info("ADMIN AUTH CHECK")
             token = request.session.get("token")
             if not token:
                 logger.info("NO TOKEN IN SESSION")
