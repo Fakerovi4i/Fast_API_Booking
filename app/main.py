@@ -134,9 +134,27 @@ async def log_request(request: Request, call_nex):
     start_time = time.time()
     response = await call_nex(request)
     process_time = time.time() - start_time
-    logger.info("Request handling time", extra={
-        "process_time": round(process_time, 4)
-    })
+
+    logger.debug(
+        "Request handled",
+        extra={
+            "method": request.method,
+            "path": request.url.path,
+            "process_time": round(process_time, 4),
+        }
+    )
+
+    # Медленные запросы отдельно в WARNING
+    if process_time > 1.0:
+        logger.warning(
+            "Slow request",
+            extra={
+                "method": request.method,
+                "path": request.url.path,
+                "process_time": round(process_time, 4),
+            }
+        )
+
     return response
 
 

@@ -21,7 +21,7 @@ engine = create_async_engine(
     json_deserializer=lambda obj: json.loads(obj) if obj else None,
     **DATABASE_PARAMS
 )
-logger.info("Database engine created", extra={"database_url": settings.DATABASE_URL})
+logger.info("Database engine created")
 
 async_session_maker = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
