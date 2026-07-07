@@ -5,7 +5,6 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sess
 from sqlalchemy.orm import DeclarativeBase
 
 from app.config import settings
-from app.logger import logger
 
 if settings.MODE == "TEST":
     DATABASE_URL = settings.TEST_DATABASE_URL
@@ -21,7 +20,6 @@ engine = create_async_engine(
     json_deserializer=lambda obj: json.loads(obj) if obj else None,
     **DATABASE_PARAMS
 )
-logger.info("Database engine created")
 
 async_session_maker = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 

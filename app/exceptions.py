@@ -50,8 +50,8 @@ class IncorrectTokenFormatException(BookingException):
     detail="Неверный формат token"
 
 class UserNotFoundException(BookingException):
-    status_code=status.HTTP_401_UNAUTHORIZED
-    detail="Пользователь не найден"
+    status_code = status.HTTP_404_NOT_FOUND
+    detail = "Пользователь не найден"
 
 class RoomCannotBeBookedException(BookingException):
     status_code=status.HTTP_409_CONFLICT

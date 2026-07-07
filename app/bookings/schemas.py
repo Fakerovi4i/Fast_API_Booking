@@ -3,6 +3,8 @@ from datetime import date
 
 
 class SBooking(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     room_id: int
     user_id: int
@@ -12,14 +14,9 @@ class SBooking(BaseModel):
     total_cost: int
     total_days: int
 
-    model_config = ConfigDict(from_attributes=True)
-    # Это старый способ
-    # class Config:
-    #     orm_mode = True
-    #     model_config = ConfigDict(from_attributes=True)
+
 
 class SBookingReturn(BaseModel):
-
     model_config = ConfigDict(from_attributes=True)
 
     id: int
@@ -35,5 +32,3 @@ class SBookingReturn(BaseModel):
     description: str
     services: list[str]
 
-    # class Config:
-    #     orm_mode = True
