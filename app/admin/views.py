@@ -33,7 +33,6 @@ class RoomsAdmin(ModelView, model=Rooms):
 
 class BookingsAdmin(ModelView, model=Bookings):
     column_list = [column.name for column in Bookings.__table__.columns] + [Bookings.user, Bookings.room]
-
     name = "Бронь"
     name_plural = "Бронирования"
     icon = "fa-solid fa-book"

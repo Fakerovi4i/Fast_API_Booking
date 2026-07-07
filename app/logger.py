@@ -1,3 +1,5 @@
+import functools
+import json
 import logging
 from datetime import datetime, timezone
 
@@ -19,8 +21,9 @@ class CustomJsonFormatter(JsonFormatter):
         log_record["level"] = level.upper()
 
 
+
 formatter = CustomJsonFormatter(
-    fmt="%(timestamp)s %(level)s %(module)s %(funcName)s",
+    fmt="%(timestamp)s %(level)s %(funcName)s %(message)s"
 )
 
 

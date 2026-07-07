@@ -19,6 +19,14 @@ class BookingException(HTTPException):
     def __init__(self):
         super().__init__(status_code=self.status_code, detail=self.detail)
 
+class BookingNotFoundException(BookingException):
+    status_code = status.HTTP_404_NOT_FOUND
+    detail = "Бронь не найдена"
+
+class BookingNotBelongsToUserException(BookingException):
+    status_code = status.HTTP_403_FORBIDDEN
+    detail = "Бронь не принадлежит пользователю"
+
 
 class UserAlreadyExistsException(BookingException):
     status_code = status.HTTP_409_CONFLICT
@@ -62,11 +70,8 @@ class HotelNotFoundException(BookingException):
         status_code = status.HTTP_404_NOT_FOUND
         detail = "Отель не найден"
 
+class DatabaseErrorException(BookingException):
+    status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    detail = "Внутренняя ошибка базы данных"
 
-class BookingNotFoundException(BookingException):
-    status_code = status.HTTP_404_NOT_FOUND
-    detail = "Бронь не найдена"
 
-class BookingNotBelongsToUserException(BookingException):
-    status_code = status.HTTP_403_FORBIDDEN
-    detail = "Бронь не принадлежит пользователю"

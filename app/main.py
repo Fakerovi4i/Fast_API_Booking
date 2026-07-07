@@ -10,7 +10,6 @@ from fastapi_cache.backends.redis import RedisBackend
 from fastapi_cache.decorator import cache
 from redis import asyncio as aioredis
 from sqladmin import Admin
-
 import sentry_sdk
 
 from app.admin.auth import authentication_backend
@@ -25,25 +24,70 @@ from app.logger import logger
 from app.pages.router import router as router_pages
 from app.users.router import router_auth, router_user
 
+from app.exceptions import BookingException
+
+
+
+# ====== Sentry =====
+sentry_sdk.init(
+    dsn=settings.SENTRY_DSN,
+    send_default_pii=True,
+)
+
 
 # === Lifespan ===
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
+    # Проверка БД
+    try:
+        async with engine.begin() as conn:
+            await conn.execute(text("SELECT 1"))
+        logger.info("Database connection successful")
+    except Exception as e:
+        logger.critical(f"Database connection failed: {e}")
+
+
+    logger.info("Starting application...", extra={"event": "startup"})
     redis = aioredis.from_url(
         f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}", encoding="utf-8", decode_responses=True
     )
     FastAPICache.init(RedisBackend(redis), prefix="cache")
+    logger.info("Application startup complete", extra={"event": "startup"})
     yield
+
     # Shutdown
+    logger.info("Application shutdown initiated", extra={"event": "shutdown"})
     await redis.close()
+    logger.info("Application shutdown complete", extra={"event": "shutdown"})
 
 
-# === Создание приложения (ОДИН раз!) ===
+# === Создание приложения ===
 app = FastAPI(
     default_response_class=ORJSONResponse,
     lifespan=lifespan
 )
+
+# === Глобальные обработчики исключений ===
+@app.exception_handler(BookingException)
+async def booking_exception_handler(request: Request, exc: BookingException):
+    logger.error(
+        f"ERROR: {exc.detail}",
+        exc_info=True,
+        extra={"path": request.url.path, "status_code": exc.status_code}
+    )
+    return ORJSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    logger.critical(
+        f"UNEXPECTED ERROR: {type(exc).__name__}: {exc}",
+        extra={"path": request.url.path}
+    )
+    return ORJSONResponse(status_code=500, content={"detail": "INTERNAL SERVER ERROR"})
+
+
+
 
 
 # === Админка ===
@@ -52,8 +96,6 @@ admin.add_view(UsersAdmin)
 admin.add_view(HotelsAdmin)
 admin.add_view(RoomsAdmin)
 admin.add_view(BookingsAdmin)
-
-
 
 
 # === Static files ===
@@ -71,19 +113,8 @@ app.include_router(router_images)
 app.include_router(router_importer)
 
 
-
 # === CORS ===
-origins = ["http://localhost:3000"]
-
-
-
-# ====== Sentry =====
-sentry_sdk.init(
-    dsn=settings.SENTRY_DSN,
-    send_default_pii=True,
-)
-
-#==== LOGGER =====
+origins = ["http://localhost:3000"] # Разрешенные домены которые могут делать запросы
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -96,6 +127,8 @@ app.add_middleware(
     ]
 )
 
+
+# === Logger показывает время обработки запроса ===
 @app.middleware("http")
 async def log_request(request: Request, call_nex):
     start_time = time.time()
@@ -107,9 +140,7 @@ async def log_request(request: Request, call_nex):
     return response
 
 
-
-
-# === Тестовый эндпоинт ===
+# === Тестовый эндпоинт для проверки кэша redis ===
 @app.get("/test")
 @cache(expire=60)
 async def test():
