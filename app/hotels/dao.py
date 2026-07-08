@@ -182,10 +182,10 @@ class HotelDAO(BaseDAO):
                                 rooms_left=rooms_left
                             )
                         )
-                logger.info(f"FIND HOTELS WITH ROOMS LEFT SUCCESS: {len(hotels_with_rooms_left)} hotels found")
+                logger.info(f"FIND HOTELS WITH ROOMS LEFT: SUCCESS: {len(hotels_with_rooms_left)} hotels found")
                 return hotels_with_rooms_left
             except SQLAlchemyError as e:
-                logger.error(f"FIND HOTELS WITH ROOMS LEFT ERROR: params {location}, {date_from}, {date_to}, {e}", exc_info=True)
+                logger.error(f"FIND HOTELS WITH ROOMS LEFT: ERROR: params {location}, {date_from}, {date_to}, {e}", exc_info=True)
                 raise DatabaseErrorException from e
 
 
@@ -195,10 +195,10 @@ class HotelDAO(BaseDAO):
             try:
                 query = select(Hotels)
                 result = await session.execute(query)
-                logger.info("FIND ALL SUCCESS")
+                logger.info("FIND ALL: SUCCESS")
                 return result.scalars().all()
             except SQLAlchemyError as e:
-                logger.error(f"FIND ALL ERROR: {e}", exc_info=True)
+                logger.error(f"FIND ALL: ERROR: {e}", exc_info=True)
                 raise DatabaseErrorException from e
 
 

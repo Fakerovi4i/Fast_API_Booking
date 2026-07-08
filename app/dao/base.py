@@ -16,7 +16,7 @@ class BaseDAO:
             try:
                 query = select(cls.model).filter_by(id=model_id)
                 result = await session.execute(query)
-                logger.info("FIND BY ID SUCCESS")
+                logger.info("FIND BY ID: SUCCESS")
                 return result.scalar_one_or_none()
             except SQLAlchemyError as e:
                 logger.error(f"FIND BY ID ERROR: {e}", exc_info=True)
@@ -29,7 +29,7 @@ class BaseDAO:
             try:
                 query = select(cls.model).filter_by(**filter_by)
                 result = await session.execute(query)
-                logger.info("FIND ONE OR NONE SUCCESS")
+                logger.info("FIND ONE OR NONE: SUCCESS")
                 return result.scalar_one_or_none()
             except SQLAlchemyError as e:
                 logger.error(f"FIND ONE OR NONE ERROR: {e}", exc_info=True)
@@ -42,7 +42,7 @@ class BaseDAO:
             try:
                 query = select(cls.model).filter_by(**filter_by)
                 result = await session.execute(query)
-                logger.info("FIND ALL SUCCESS")
+                logger.info("FIND ALL: SUCCESS")
                 return result.scalars().all()
             except SQLAlchemyError as e:
                 logger.error(f"FIND ALL ERROR: {e}", exc_info=True)
@@ -56,7 +56,7 @@ class BaseDAO:
                 query = insert(cls.model).values(**data)
                 await session.execute(query)
                 await session.commit()
-                logger.info("ADD SUCCESS")
+                logger.info("ADD: SUCCESS")
             except SQLAlchemyError as e:
                 logger.error(f"ADD ERROR: {e}", exc_info=True)
                 await session.rollback()
@@ -70,7 +70,7 @@ class BaseDAO:
                 query = pg_insert(cls.model).values(data).on_conflict_do_nothing()
                 result = await session.execute(query)
                 await session.commit()
-                logger.info("ADD_MANY_FROM_CSV SUCCESS")
+                logger.info("ADD_MANY_FROM_CSV: SUCCESS")
                 return result.rowcount
             except SQLAlchemyError as e:
                 logger.error(f"ADD_MANY_FROM_CSV ERROR: {e}", exc_info=True)

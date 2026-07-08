@@ -11,9 +11,9 @@ router = APIRouter(prefix="", tags=["Отели"])
 
 @router.get("/{hotel_id}/rooms")
 async def get_hotel_rooms(
-        hotel_id: int = Path(examples=["1"]),
-        date_from: date = Query(examples=["2023-05-20"]),
-        date_to: date = Query(examples=["2023-06-20"])
+        hotel_id: int = Path(example="1"),
+        date_from: date = Query(example="2023-05-20"),
+        date_to: date = Query(example="2023-06-20")
 ) -> list[SRoomWithBookingInfo]:
     if date_from >= date_to:
         raise WrongDateException

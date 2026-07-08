@@ -11,6 +11,7 @@ from fastapi_cache.decorator import cache
 from redis import asyncio as aioredis
 from sqladmin import Admin
 import sentry_sdk
+from sqlalchemy import text
 
 from app.admin.auth import authentication_backend
 from app.admin.views import BookingsAdmin, HotelsAdmin, RoomsAdmin, UsersAdmin
@@ -135,11 +136,13 @@ async def log_request(request: Request, call_nex):
     response = await call_nex(request)
     process_time = time.time() - start_time
 
-    logger.debug(
-        "Request handled",
+    logger.info(
+        f"{request.method} {request.url.path} {response.status_code}",
         extra={
             "method": request.method,
             "path": request.url.path,
+            "query": str(request.query_params),  # читаемые русские буквы
+            "status_code": response.status_code,
             "process_time": round(process_time, 4),
         }
     )

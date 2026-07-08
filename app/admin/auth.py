@@ -28,7 +28,7 @@ class AdminAuth(AuthenticationBackend):
             return False
 
         try:
-            logger.info(f"ADMIN LOGIN SUCCESS: {email}")
+            logger.info(f"ADMIN LOGIN: SUCCESS: {email}")
             access_token = create_access_token({"sub": str(user.id)})
         except Exception as e:
             logger.error(f"ADMIN AUTH ERROR CREATE ACCESS TOKEN: {e}", exc_info=True)
