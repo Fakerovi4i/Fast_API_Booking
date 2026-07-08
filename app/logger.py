@@ -1,11 +1,9 @@
-import functools
-import json
 import logging
 from datetime import datetime, timezone
-
 from pythonjsonlogger.json import JsonFormatter
 
 from app.config import settings
+
 
 logger = logging.getLogger("app")
 log_handler = logging.StreamHandler()

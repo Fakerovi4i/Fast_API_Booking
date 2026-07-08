@@ -26,7 +26,7 @@ def get_token(request: Request):
     token = request.cookies.get("booking_access_token")
 
     if not token:
-        raise TokenAbsentException
+        raise TokenAbsentException()
     return token
 
 
@@ -35,21 +35,19 @@ async def get_current_user(token: str = Depends(get_token)):
         payload = jwt.decode(token, settings.SECRET_KEY, settings.ALGORITHM)
 
     except JWTError as e:
-        raise IncorrectTokenFormatException
+        raise IncorrectTokenFormatException()
 
     expire = payload.get("exp")
     now = datetime.now(timezone.utc).timestamp()
-
     if not expire:
-        raise TokenExpiredException
+        raise TokenExpiredException()
 
     if int(expire) < now:
-        raise TokenExpiredException
+        raise TokenExpiredException()
 
     user_id: str = payload.get("sub")
-
     if not user_id:
-        raise UserNotFoundException
+        raise UserNotFoundException()
 
     user = await UserDAO.find_by_id(int(user_id))
     if not user:
