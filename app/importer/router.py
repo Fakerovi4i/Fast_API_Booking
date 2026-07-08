@@ -5,15 +5,17 @@ from typing import Literal
 from fastapi import UploadFile, APIRouter, HTTPException, status, Depends
 
 from app.dao.base import BaseDAO
+from app.exceptions import EmptyFileException, InvalidFileFormatException
+from app.logger import logger
 from app.users.dependences import get_current_user
 from app.importer.utils import TABLE_MODEL_MAP, convert_csv_to_postgres_format
+
 
 router = APIRouter(
     prefix="/import",
     tags=["Импорт данных из CSV базу"]
 
 )
-
 
 @router.post(
     "/{table_name}",
@@ -24,21 +26,17 @@ async def import_csv_table(
         file: UploadFile,
         table_name: Literal["hotels", "rooms", "bookings"]
 ):
+    logger.info(f"IMPORTING CSV {table_name} from file: {file.filename}")
     if not file.filename.endswith('.csv'):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Файл должен быть в формате CSV"
-        )
+        raise InvalidFileFormatException()
+
     ModelDAO: type[BaseDAO] = TABLE_MODEL_MAP[table_name]
     content = (await file.read()).decode('utf-8')
     csvReader = csv.DictReader(io.StringIO(content), delimiter=';')
     data = convert_csv_to_postgres_format(csvReader)
 
     if not data:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Файл не содержит данных"
-        )
+        raise EmptyFileException()
 
     if table_name == "bookings":
         for row in data:
@@ -46,6 +44,7 @@ async def import_csv_table(
             row.pop("total_days", None)
 
     inserted = await ModelDAO.add_many_from_csv(data)
+    logger.info(f"IMPORTED CSV {inserted} records into {table_name}")
     return {"message": f"Добавлено {inserted} записей"}
 
 

@@ -74,4 +74,12 @@ class DatabaseErrorException(BookingException):
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
     detail = "Внутренняя ошибка базы данных"
 
+class InvalidFileFormatException(BookingException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = "Файл должен быть в формате CSV"
+
+class EmptyFileException(BookingException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = "Файл не содержит данных"
+
 
